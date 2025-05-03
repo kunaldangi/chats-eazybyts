@@ -1,10 +1,10 @@
-package com.easybyts.chats.controller.Auth.Login;
+package com.easybyts.chats.controller.Auth.Register;
 
-public class LoginResponse {
+public class RegisterResponse {
     private String status;
     private String message;
 
-    public LoginResponse(String status, String message) {
+    public RegisterResponse(String status, String message) {
         this.status = status;
         this.message = message;
     }
