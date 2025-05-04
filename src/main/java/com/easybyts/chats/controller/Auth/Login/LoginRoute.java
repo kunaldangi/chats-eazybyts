@@ -31,9 +31,9 @@ public class LoginRoute {
 
         String username = request.getEmail(); // users can send username in email field as well
         String email = request.getEmail();
-
-        if (request.getEmail() == null || request.getEmail().isEmpty()) return ResponseEntity.badRequest().body(new LoginResponse("error", "Email is required!"));
-        if (request.getPassword() == null || request.getPassword().isEmpty()) return ResponseEntity.badRequest().body(new LoginResponse("error", "Password is required!"));
+        System.out.println("Email: " + email + ", Username: " + username + ", Password: " + request.getPassword());
+        
+        if ((request.getEmail() == null || request.getEmail().isEmpty()) && (request.getPassword() == null || request.getPassword().isEmpty())) return ResponseEntity.badRequest().body(new LoginResponse("error", "Email or Username is required!"));
 
         Optional<User> existing = userRepository.findByEmailOrUsername(email, username);
         if (!existing.isPresent()) {
