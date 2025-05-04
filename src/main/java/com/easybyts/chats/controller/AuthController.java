@@ -10,6 +10,8 @@ import com.easybyts.chats.controller.Auth.AuthService;
 import com.easybyts.chats.controller.Auth.Login.LoginRequest;
 import com.easybyts.chats.controller.Auth.Register.RegisterRequest;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("/api/auth") // handle authentication requests
 public class AuthController {
@@ -21,8 +23,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        return authService.login(request);
+    public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpServletResponse response) {
+        return authService.login(request, response);
     }
 
     @PostMapping("/register")
