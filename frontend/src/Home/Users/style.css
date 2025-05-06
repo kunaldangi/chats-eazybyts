@@ -1,0 +1,40 @@
+.chats__users{
+    padding: 10px 8px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.chats__user{
+    height: 45px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 0px 20px;
+
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.user__online {
+    background: #2ed573;
+}
+
+.user__offline {
+    background: #57606f;
+}
+
+.chats__user--status-msg{
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: red;
+    border-radius: 50%;
+}
