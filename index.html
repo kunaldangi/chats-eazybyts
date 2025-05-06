@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chat App with Sidebar</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      display: flex;
+      height: 100vh;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #2f3542;
+      color: #fff;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .user {
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #57606f;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .user.online {
+      background: #2ed573;
+    }
+
+    .user.offline {
+      background: #57606f;
+    }
+
+    .notification {
+      font-size: 14px;
+    }
+
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #f1f2f6;
+    }
+
+    .chat-header {
+      background: #ced6e0;
+      padding: 15px;
+      font-weight: bold;
+    }
+
+    .chat-box {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+    }
+
+    .message {
+      margin: 8px 0;
+      padding: 10px;
+      max-width: 60%;
+      border-radius: 8px;
+      background: #dfe4ea;
+    }
+
+    .own-message {
+      background: #70a1ff;
+      align-self: flex-end;
+      color: #fff;
+      text-align: right;
+    }
+
+    .input-area {
+      padding: 10px;
+      display: flex;
+      gap: 10px;
+    }
+
+    input {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px 15px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar" id="userList">
+    <h3>Users</h3>
+    <!-- Users will be populated here -->
+  </div>
+
+  <div class="chat-container">
+    <div class="chat-header" id="chatWith">Select a user to chat</div>
+    <div class="chat-box" id="chatBox"></div>
+    <div class="input-area">
+      <input type="text" id="msgInput" placeholder="Type message..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    const users = [
+      { name: "Alice", online: true, unseen: 1 },
+      { name: "Bob", online: false, unseen: 0 },
+      { name: "Charlie", online: true, unseen: 2 },
+    ];
+
+    let currentUser = null;
+    const chatData = {};
+
+    function renderUsers() {
+      const userList = document.getElementById("userList");
+      userList.innerHTML = "<h3>Users</h3>";
+
+      users.forEach(user => {
+        const div = document.createElement("div");
+        div.className = `user ${user.online ? "online" : "offline"}`;
+        div.innerHTML = `
+          <span>${user.name}</span>
+          <span class="notification">${user.unseen > 0 ? "🔴" : "✅"}</span>
+        `;
+        div.onclick = () => selectUser(user.name);
+        userList.appendChild(div);
+      });
+    }
+
+    function selectUser(username) {
+      currentUser = username;
+      document.getElementById("chatWith").textContent = `Chat with ${username}`;
+      users.find(u => u.name === username).unseen = 0;
+      renderUsers();
+      renderMessages();
+    }
+
+    function sendMessage() {
+      const input = document.getElementById("msgInput");
+      const message = input.value.trim();
+      if (!message || !currentUser) return;
+
+      if (!chatData[currentUser]) chatData[currentUser] = [];
+      chatData[currentUser].push({ from: "me", text: message });
+
+      input.value = "";
+      renderMessages();
+    }
+
+    function renderMessages() {
+      const chatBox = document.getElementById("chatBox");
+      chatBox.innerHTML = "";
+      const messages = chatData[currentUser] || [];
+
+      messages.forEach(msg => {
+        const div = document.createElement("div");
+        div.className = "message";
+        if (msg.from === "me") div.classList.add("own-message");
+        div.textContent = msg.text;
+        chatBox.appendChild(div);
+      });
+
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // Initialize
+    renderUsers();
+  </script>
+</body>
+</html>
