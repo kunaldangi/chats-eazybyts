@@ -25,7 +25,7 @@ public class FrontendController {
 
     @GetMapping("/")
     public String handleRoot(HttpServletRequest request, HttpServletResponse response) {
-        String token = getJwtFromCookies(request);
+        String token = jwtUtil.getJwtFromCookies(request);
 
         if (token == null) {
             return "redirect:/login";
@@ -46,18 +46,5 @@ public class FrontendController {
     @RequestMapping(value = "/{path:[^\\.]*}")
     public String redirect() {
         return "forward:/index.html";
-    }
-
-
-    private String getJwtFromCookies(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) return null;
-
-        for (Cookie cookie : cookies) {
-            if ("session".equals(cookie.getName())) {
-                return cookie.getValue();
-            }
-        }
-        return null;
     }
 }
