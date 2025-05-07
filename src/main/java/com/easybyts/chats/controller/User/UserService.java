@@ -8,13 +8,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import com.easybyts.chats.controller.User.GetUsers.GetUsersRoute;
-import com.easybyts.chats.repository.UserRepository;
 
 @Component 
 public class UserService {
     private final GetUsersRoute getUsers;
-
-    @Autowired private UserRepository userRepository;
 
     @Autowired
     public UserService(GetUsersRoute getUsers) {

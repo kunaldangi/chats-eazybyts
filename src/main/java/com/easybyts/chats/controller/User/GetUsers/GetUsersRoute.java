@@ -18,9 +18,7 @@ import com.easybyts.chats.websocket.WebSocketSessionManager;
 
 @Service
 public class GetUsersRoute {
-
-    @Autowired
-    private UserRepository userRepository;
+    @Autowired private UserRepository userRepository;
 
     public ResponseEntity<?> handleRoute(HttpServletRequest request, HttpServletResponse response) {
         try {

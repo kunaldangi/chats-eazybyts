@@ -1,35 +1,37 @@
 package com.easybyts.chats.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "messages")
 public class Messages {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String sender;
+    @Column(name = "sender_id", nullable = false)
+    private Long senderId;
 
-    @Column(nullable = false)
-    private String receiver;
+    @Column(name = "receiver_id", nullable = false)
+    private Long receiverId;
 
-    @Column(nullable = false)
+    @Lob
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
     @Column(name = "created_at", updatable = false)
-    private java.time.LocalDateTime createdAt = java.time.LocalDateTime.now();
-    
+    private LocalDateTime createdAt = LocalDateTime.now();
+
     @Column(name = "updated_at")
-    private java.time.LocalDateTime updatedAt = java.time.LocalDateTime.now();
+    private LocalDateTime updatedAt = LocalDateTime.now();
 
     public Messages() {}
 
-    public Messages(String sender, String receiver, String content) {
-        this.sender = sender;
-        this.receiver = receiver;
+    public Messages(Long senderId, Long receiverId, String content) {
+        this.senderId = senderId;
+        this.receiverId = receiverId;
         this.content = content;
     }
 
@@ -37,24 +39,20 @@ public class Messages {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Long getSenderId() {
+        return senderId;
     }
 
-    public String getSender() {
-        return sender;
+    public void setSenderId(Long senderId) {
+        this.senderId = senderId;
     }
 
-    public void setSender(String sender) {
-        this.sender = sender;
+    public Long getReceiverId() {
+        return receiverId;
     }
 
-    public String getReceiver() {
-        return receiver;
-    }
-
-    public void setReceiver(String receiver) {
-        this.receiver = receiver;
+    public void setReceiverId(Long receiverId) {
+        this.receiverId = receiverId;
     }
 
     public String getContent() {
@@ -63,5 +61,17 @@ public class Messages {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
