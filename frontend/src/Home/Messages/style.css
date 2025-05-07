@@ -1,0 +1,25 @@
+.message {
+    display: flex;
+    padding: 0px 25px;
+}
+
+.me {
+    justify-content: flex-end;
+}
+
+.other {
+    justify-content: flex-start;
+}
+
+.message__content{
+    padding: 10px 15px;
+    border-radius: 20px;
+}
+
+.me .message__content{
+    background-color: #e8e8f8;
+}
+
+.other .message__content{
+    background-color: #e9e9e9;
+}

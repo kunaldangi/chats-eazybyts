@@ -13,6 +13,9 @@ type UserState = {
     addUser: (user: User) => void;
     removeUser: (id: number) => void;
     updateUser: (id: number, updatedUser: Partial<User>) => void;
+
+    chatWith: User;
+    setChatWith: (user: User) => void;
 }
 
 export const useUserStore = create<UserState>((set, get) => ({
@@ -23,4 +26,7 @@ export const useUserStore = create<UserState>((set, get) => ({
     updateUser: (id, updatedUser) => set((state) => ({
         users: state.users.map(user => user.id === id ? { ...user, ...updatedUser } : user)
     })),
+    
+    chatWith: { id: 0, username: '', email: '', isOnline: false },
+    setChatWith: (user) => set({ chatWith: user})
 }));

@@ -1,20 +1,25 @@
-import { useEffect, useState } from 'react';
-import { AlignJustify } from 'lucide-react';
+import { useEffect } from 'react';
+import { AlignJustify, MessageCircleIcon } from 'lucide-react';
 
 import './App.css';
 import { useWebSocketStore } from './Store/WebSocket';
 import { useUserStore } from './Store/Users';
 import Users from './Home/Users';
 import StatusToast from './components/StatusToast';
+import MessageInput from './components/MessageInput';
+import { Messages } from './Home/Messages';
 
 function App() {
 	const connect = useWebSocketStore((state) => state.connect);
 	const disconnect = useWebSocketStore((state) => state.disconnect);
+	const sendMessage = useWebSocketStore((state) => state.sendMessage);
 
 	const setUsers = useUserStore((state) => state.setUsers);
 
 	const toast = useWebSocketStore((state) => state.toast);
 	const setToast = useWebSocketStore((state) => state.setToast);
+
+	const chatWith = useUserStore((state) => state.chatWith);
 
 	async function getUsers() {
 		let response = await fetch("/api/users/", {
@@ -31,6 +36,18 @@ function App() {
 		}
 	}
 
+	async function sendMessageToUser(message: string) {
+		if (message.trim() === "") return;
+		let data = {
+			type: "send_message",
+			content: JSON.stringify({
+				to: chatWith,
+				message: message,
+			})
+		};
+		sendMessage(JSON.stringify(data));
+	}
+
 	useEffect(() => {
 		getUsers();
 		connect();
@@ -45,6 +62,27 @@ function App() {
 		<div className="chats__nav">
 			<div className="chats__nav--sidebar"><AlignJustify /></div>
 			<div className="chats__nav--title">CHATS</div>
+		</div>
+		<div className="chats__container">
+			{
+				chatWith?.id ? (<>
+					<div className="chats__profile">{chatWith.username}</div>
+					<div className="chats__messages">
+						<Messages />
+					</div>
+					<div className="chats__input">
+						<MessageInput onSend={sendMessageToUser} />
+					</div>
+				</>) : (<>
+					<div className="chats__empty">
+						<span className="chats__empty--content">
+							<div className="chats__empty--icon"><MessageCircleIcon size={38} /></div>
+							<div className="chats__empty--title">CHATS</div>
+						</span>
+					</div>
+				</>)
+			}
+
 		</div>
 		<StatusToast message={toast.message} type={toast.type} onClose={() => setToast("", "default")} />
 	</>)

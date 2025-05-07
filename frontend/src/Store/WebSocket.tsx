@@ -39,7 +39,7 @@ export const useWebSocketStore = create<WebSocketState>((set, get) => ({
 
 		ws.onopen = () => {
 			console.log("✅ Connected to WebSocket");
-      		ws.send(JSON.stringify({ type: 'connected', message: 'Connected!'}));
+      		ws.send(JSON.stringify({ type: 'connected', content: 'Connected!'}));
 		}
 		ws.onmessage = (event) => {
 			const data = JSON.parse(event.data);
@@ -69,7 +69,7 @@ export const useWebSocketStore = create<WebSocketState>((set, get) => ({
 	sendMessage: (text) => {
 		const socket = get().socket
 		if (socket && socket.readyState === WebSocket.OPEN) {
-			socket.send(JSON.stringify({ text }))
+			socket.send(text)
 		}
 	},
 
