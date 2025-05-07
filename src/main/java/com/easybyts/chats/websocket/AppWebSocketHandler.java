@@ -3,6 +3,8 @@ package com.easybyts.chats.websocket;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
@@ -10,17 +12,22 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.easybyts.chats.util.JwtUtil;
+import com.easybyts.chats.websocket.Actions.SendMessage;
 import com.easybyts.chats.websocket.DTO.MessagePayload;
 import com.easybyts.chats.websocket.DTO.OnlineUser;
 
+@Component
 public class AppWebSocketHandler extends TextWebSocketHandler {
 
     private final JwtUtil jwtUtil;
     private final WebSocketMessageService webSocketMessageService;
+    private final SendMessage sendMessage;
 
-    public AppWebSocketHandler() {
+    @Autowired
+    public AppWebSocketHandler(WebSocketMessageService webSocketMessageService, SendMessage sendMessage) {
         this.jwtUtil = new JwtUtil();
-        this.webSocketMessageService = new WebSocketMessageService();
+        this.webSocketMessageService = webSocketMessageService;
+        this.sendMessage = sendMessage;
     }
 
     @Override
@@ -53,8 +60,15 @@ public class AppWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        System.out.println("📨 Received: " + message.getPayload());
-        // session.sendMessage(new TextMessage("Echo: " + message.getPayload()));
+        String dataString = message.getPayload();
+        MessagePayload messagePayload = new ObjectMapper().readValue(dataString, MessagePayload.class);
+        switch (messagePayload.getType()) {
+            case "send_message":
+                sendMessage.handleMessage(session, messagePayload.getContent());
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
