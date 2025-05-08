@@ -30,7 +30,6 @@ function App() {
 		});
 
 		let data = await response.json();
-		console.log(data);
 		if (data?.status === "success") {
 			setUsers(data?.users);
 		}
@@ -51,7 +50,17 @@ function App() {
 	useEffect(() => {
 		getUsers();
 		connect();
-		return () => disconnect()
+		
+		document.addEventListener("click", (e) => {
+			const sidebar = document.querySelector(".chats__sidebar");
+			if (sidebar && !(e.target as HTMLElement).closest(".chats__sidebar") && !(e.target as HTMLElement).closest(".chats__nav--sidebar")) {
+				sidebar.classList.toggle("toggle__sidebar", false);
+			}
+		});
+
+		return () => {
+			disconnect();
+		}
 	}, []);
 
 	return (<>
@@ -59,13 +68,19 @@ function App() {
 			<div className="chats__title">CHATS</div>
 			<Users />
 		</div>
-		<div className="chats__nav">
-			<div className="chats__nav--sidebar"><AlignJustify /></div>
-			<div className="chats__nav--title">CHATS</div>
-		</div>
-		<div className="chats__container">
-			{
-				chatWith?.id ? (<>
+		<div className="chats__body">
+			<div className="chats__container">
+				<div className="chats__nav">
+					<div className="chats__nav--sidebar"><AlignJustify onClick={()=>{
+						const sidebar = document.querySelector(".chats__sidebar");
+						console.log(sidebar);
+						if (sidebar) {
+							sidebar.classList.toggle("toggle__sidebar", true);
+						}
+					}} /></div>
+					<div className="chats__nav--title">CHATS</div>
+				</div>
+				{ chatWith?.id ? (<>
 					<div className="chats__profile">{chatWith.username}</div>
 					<div className="chats__messages">
 						<Messages />
@@ -80,9 +95,8 @@ function App() {
 							<div className="chats__empty--title">CHATS</div>
 						</span>
 					</div>
-				</>)
-			}
-
+				</>)}
+			</div>
 		</div>
 		<StatusToast message={toast.message} type={toast.type} onClose={() => setToast("", "default")} />
 	</>)

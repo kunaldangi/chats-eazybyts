@@ -3,6 +3,8 @@ import { create } from 'zustand';
 
 import OnlineUserAdded from './actions/OnlineUserAdded';
 import OnlineUserRemoved from './actions/OnlineUserRemoved';
+import MessageReceived from './actions/MessageReceived';
+import MessageSent from './actions/MessageSent';
 
 type Toast = {
 	message: string
@@ -43,13 +45,23 @@ export const useWebSocketStore = create<WebSocketState>((set, get) => ({
 		}
 		ws.onmessage = (event) => {
 			const data = JSON.parse(event.data);
-			
-			console.log(data);
-			if (data.type === 'online_user_added'){
-				OnlineUserAdded(JSON.parse(data.content));
-			}
-			if (data.type === 'online_user_removed'){
-				OnlineUserRemoved(JSON.parse(data.content));
+			switch (data.type) {
+				case 'online_user_added': {
+					OnlineUserAdded(JSON.parse(data.content));
+					break;
+				}
+				case 'online_user_removed': {
+					OnlineUserRemoved(JSON.parse(data.content));
+					break;
+				}
+				case 'message_received': {
+					MessageReceived(JSON.parse(data.content));
+					break;
+				}
+				case 'message_sent': {
+					MessageSent(JSON.parse(data.content));
+					break;
+				}
 			}
 		}
 		ws.onclose = () => {

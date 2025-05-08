@@ -13,6 +13,7 @@ import com.easybyts.chats.websocket.Actions.DTO.Message;
 import com.easybyts.chats.websocket.Actions.DTO.User;
 import com.easybyts.chats.websocket.DTO.MessagePayload;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 @Component // in order to use @Autowired to inject the MessagesRepository
 public class SendMessage {
@@ -27,7 +28,10 @@ public class SendMessage {
 
     public void handleMessage(WebSocketSession session, String dataString) {
         try {
-            Message message = new ObjectMapper().readValue(dataString, Message.class);
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+
+            Message message = objectMapper.readValue(dataString, Message.class);
             User receiveUser = message.getTo();
             System.out.println("Message received: " + message.getMessage());
             System.out.println("Receiver: " + receiveUser.getUsername());
@@ -44,12 +48,13 @@ public class SendMessage {
             newMessage.setReceiverId(receiverId);
             messagesRepository.save(newMessage);
 
-            MessagePayload senderPayload = new MessagePayload("message_sent", message.getMessage());
-            String senderPayloadString = new ObjectMapper().writeValueAsString(senderPayload);
+            String messageString = objectMapper.writeValueAsString(newMessage);
+            MessagePayload senderPayload = new MessagePayload("message_sent", messageString);
+            String senderPayloadString = objectMapper.writeValueAsString(senderPayload);
             webSocketMessageService.sendMessageToUser(senderId, senderPayloadString);
 
-            MessagePayload receiverPayload = new MessagePayload("message_received", message.getMessage());
-            String receiverPayloadString = new ObjectMapper().writeValueAsString(receiverPayload);
+            MessagePayload receiverPayload = new MessagePayload("message_received", messageString);
+            String receiverPayloadString = objectMapper.writeValueAsString(receiverPayload);
             webSocketMessageService.sendMessageToUser(receiverId, receiverPayloadString);
 
         } catch (Exception e) {

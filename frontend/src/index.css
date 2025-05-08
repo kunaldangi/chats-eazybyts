@@ -17,6 +17,8 @@ html{
 }
 
 body{
+	height: 100vh;
+
 	font-family: "Inter", sans-serif;
 	font-size: 1.6rem;
 	background-color: var(--bg-color);
