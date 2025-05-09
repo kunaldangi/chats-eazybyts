@@ -1,6 +1,7 @@
 .register__main--outter {
     height: 100vh;
     
+    flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
