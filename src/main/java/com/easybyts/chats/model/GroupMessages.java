@@ -3,6 +3,8 @@ package com.easybyts.chats.model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "group_messages")
 public class GroupMessages {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
