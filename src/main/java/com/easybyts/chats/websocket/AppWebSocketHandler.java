@@ -62,10 +62,20 @@ public class AppWebSocketHandler extends TextWebSocketHandler {
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String dataString = message.getPayload();
         MessagePayload messagePayload = new ObjectMapper().readValue(dataString, MessagePayload.class);
+
+        /*
+            Client Message Types:
+            - send_message
+
+        */
+
         switch (messagePayload.getType()) {
             case "send_message":
                 sendMessage.handleMessage(session, messagePayload.getContent());
                 break;
+            // case "create_group": // api?
+            //     // Handle group creation
+            //     break;
             default:
                 break;
         }

@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { AlignJustify, MessageCircleIcon } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { AlignJustify, CirclePlus, MessageCircleIcon } from 'lucide-react';
 
 import './App.css';
 import { useWebSocketStore } from './Store/WebSocket';
@@ -8,8 +8,9 @@ import Users from './Home/Users';
 import StatusToast from './components/StatusToast';
 import MessageInput from './components/MessageInput';
 import { Messages } from './Home/Messages';
+import { Dialog } from './components/Dialog';
 
-function App() {
+export default function App() {
 	const connect = useWebSocketStore((state) => state.connect);
 	const disconnect = useWebSocketStore((state) => state.disconnect);
 	const sendMessage = useWebSocketStore((state) => state.sendMessage);
@@ -20,6 +21,8 @@ function App() {
 	const setToast = useWebSocketStore((state) => state.setToast);
 
 	const chatWith = useUserStore((state) => state.chatWith);
+
+	const [dialogComponent, setDialogComponent] = useState({show: false, component: <></>});
 
 	async function getUsers() {
 		let response = await fetch("/api/users/", {
@@ -47,6 +50,24 @@ function App() {
 		sendMessage(JSON.stringify(data));
 	}
 
+	async function handleCreateGroup() {
+		setDialogComponent({show: true, component: <>
+			<div className="groupCreate__dialog">
+				<div className="groupCreate__dialog--title">Create Group</div>
+				<div className="groupCreate__dialog--content">
+					<div className="groupCreate__dialog--input">
+						<input type="text" placeholder="Group Name" />
+					</div>
+					<div className="groupCreate__dialog--button">
+						<button onClick={() => {
+							setDialogComponent({show: false, component: <></>});
+						}}>Create</button>
+					</div>
+				</div>
+			</div>
+		</>});
+	}
+
 	useEffect(() => {
 		getUsers();
 		connect();
@@ -66,6 +87,11 @@ function App() {
 	return (<>
 		<div className="chats__sidebar">
 			<div className="chats__title">CHATS</div>
+			<div className="groups">
+				<div className="groups__create" onClick={handleCreateGroup}>
+					<CirclePlus size={20} /> Create Group
+				</div>
+			</div>
 			<Users />
 		</div>
 		<div className="chats__body">
@@ -99,7 +125,11 @@ function App() {
 			</div>
 		</div>
 		<StatusToast message={toast.message} type={toast.type} onClose={() => setToast("", "default")} />
-	</>)
+			
+		{dialogComponent.show && (
+			<Dialog onClose={() => setDialogComponent({show: false, component: <></>})}>
+				{dialogComponent.component}
+			</Dialog>
+		)}
+	</>);
 }
-
-export default App

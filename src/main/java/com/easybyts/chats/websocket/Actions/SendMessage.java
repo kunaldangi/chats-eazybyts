@@ -33,11 +33,8 @@ public class SendMessage {
 
             Message message = objectMapper.readValue(dataString, Message.class);
             User receiveUser = message.getTo();
-            System.out.println("Message received: " + message.getMessage());
-            System.out.println("Receiver: " + receiveUser.getUsername());
 
             Map<String, Object> userData = (Map<String, Object>) session.getAttributes().get("user");
-            System.out.println("Sender: " + userData.get("username"));
 
             Long senderId = Long.valueOf(userData.get("id").toString());
             Long receiverId = receiveUser.getId();
